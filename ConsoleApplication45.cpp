@@ -1,0 +1,184 @@
+﻿#include <iostream>
+#include <string>
+using namespace std;
+
+// Node of Doubly Linked List
+class Event {
+public:
+    string eventName;
+    Event* prev;
+    Event* next;
+
+    Event(string name) {
+        eventName = name;
+        prev = nullptr;
+        next = nullptr;
+    }
+};
+
+class EventManagementSystem {
+private:
+    Event* head;
+    Event* tail;
+
+public:
+    EventManagementSystem() {
+        head = nullptr;
+        tail = nullptr;
+    }
+
+    // Insert at the beginning
+    void insertAtFront(string name) {
+        Event* newEvent = new Event(name);
+
+        if (head == nullptr) {
+            head = tail = newEvent;
+        }
+        else {
+            newEvent->next = head;
+            head->prev = newEvent;
+            head = newEvent;
+        }
+        cout << "✔ Event added at the beginning.\n";
+    }
+
+    // Insert at the end
+    void insertAtEnd(string name) {
+        Event* newEvent = new Event(name);
+
+        if (tail == nullptr) {
+            head = tail = newEvent;
+        }
+        else {
+            tail->next = newEvent;
+            newEvent->prev = tail;
+            tail = newEvent;
+        }
+        cout << "✔ Event added at the end.\n";
+    }
+
+    // Delete from front
+    void deleteFront() {
+        if (head == nullptr) {
+            cout << "⚠ No events to delete! List is EMPTY.\n";
+            return;
+        }
+
+        Event* temp = head;
+
+        if (head == tail) {
+            head = tail = nullptr;
+        }
+        else {
+            head = head->next;
+            head->prev = nullptr;
+        }
+
+        cout << "✔ Deleted event: " << temp->eventName << endl;
+        delete temp;
+    }
+
+    // Delete from end
+    void deleteEnd() {
+        if (tail == nullptr) {
+            cout << "⚠ No events to delete! List is EMPTY.\n";
+            return;
+        }
+
+        Event* temp = tail;
+
+        if (head == tail) {
+            head = tail = nullptr;
+        }
+        else {
+            tail = tail->prev;
+            tail->next = nullptr;
+        }
+
+        cout << "✔ Deleted event: " << temp->eventName << endl;
+        delete temp;
+    }
+
+    // Display all scheduled events
+    void displayEvents() {
+        if (head == nullptr) {
+            cout << "⚠ No events scheduled.\n";
+            return;
+        }
+
+        cout << "\n======= Scheduled Events =======\n";
+        Event* temp = head;
+        int count = 1;
+
+        while (temp != nullptr) {
+            cout << count++ << ". " << temp->eventName << endl;
+            temp = temp->next;
+        }
+
+        cout << "================================\n";
+    }
+
+    ~EventManagementSystem() {
+        Event* temp;
+        while (head != nullptr) {
+            temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+};
+
+// Main Program (Menu Driven)
+int main() {
+    EventManagementSystem system;
+    int choice;
+    string name;
+
+    while (true) {
+        cout << "\n=========== EVENT MANAGEMENT SYSTEM ===========\n";
+        cout << "1. Add Event at Beginning\n";
+        cout << "2. Add Event at End\n";
+        cout << "3. Delete Event from Beginning\n";
+        cout << "4. Delete Event from End\n";
+        cout << "5. Display All Events\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+        cin.ignore();  // remove leftover newline
+
+        switch (choice) {
+        case 1:
+            cout << "Enter event name: ";
+            getline(cin, name);
+            system.insertAtFront(name);
+            break;
+
+        case 2:
+            cout << "Enter event name: ";
+            getline(cin, name);
+            system.insertAtEnd(name);
+            break;
+
+        case 3:
+            system.deleteFront();
+            break;
+
+        case 4:
+            system.deleteEnd();
+            break;
+
+        case 5:
+            system.displayEvents();
+            break;
+
+        case 6:
+            cout << "✔ Exiting Program. Thanks for using us : Goodbye!\n";
+            return 0;
+
+        default:
+            cout << "⚠ Invalid choice! Enter 1–6.\n";
+        }
+    }
+
+    return 0;
+}
